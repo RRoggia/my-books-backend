@@ -1,0 +1,9 @@
+{
+  "name": "my-books",
+  "description": "backend for the my books app",
+  "version": "0.0.1",
+  "dependencies": {
+    "google-books-search": "^0.3.0",
+    "mongoose": "3.6.x"
+  }
+}
