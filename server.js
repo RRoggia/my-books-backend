@@ -95,6 +95,25 @@ app.get("/google/books", function(req, res) {
         } else {
             console.log(error);
         }
-        res.json(results);
+
+        var books = [];
+
+        results.forEach(function(book){
+            var googleBook = {
+                title: book.title,
+                authors: book.authors,
+                publisher: book.publisher,
+                publishedDate: book.publishedDate,
+                pageCount: book.pageCount,
+                categories: book.categories,
+                language: book.language,
+                thumbnail: book.thumbnail,
+                type: book.printType
+            }
+            books.push(googleBook);
+        });
+
+        res.json(books);
+
     });
 });
