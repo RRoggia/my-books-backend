@@ -83,13 +83,16 @@ app.post("/book", function (req, res) {
 
 var books = require('google-books-search');
 
-var options = {
-    field: 'author',
-    lang: 'pt'
-};
 
 app.get("/google/books", function(req, res) {
-    books.search('Patrick Rothfuss',options ,function(error, results) {
+
+    var options = {
+        field: req.query.queryType,
+        lang: 'pt',
+        limit: 40
+    };
+
+    books.search(req.query.queryValue ,options ,function(error, results) {
         if ( ! error ) {
             console.log(results);
         } else {
