@@ -2,10 +2,12 @@ var express = require("express"),
     http = require("http"),
     mongoose = require("mongoose"),
     app = express(),
+    bodyParser = require('body-parser'),
     mongoUrl = "mongodb://localhost/books";
 
 app.use(express.static(__dirname + "/client"));
-app.use(express.bodyParser());
+app.use(bodyParser.json());
+
 
 mongoose.connect(mongoUrl);
 
@@ -24,7 +26,6 @@ mongoose.connection.on('disconnected', function(){
 
 var bookSchema = mongoose.Schema({
     title: {type: String, required: true},
-    subtitle: String,
     authors: [String],
     publisher: String,
     publishedDate: Date,
@@ -43,16 +44,17 @@ app.get("/hello", function(req, res) {
     res.send("Hello World!");
 });
 
-app.get("/books", function (req, res) {
+app.get("/myBooks/books", function (req, res) {
     Book.find({}, function (err, books) {
 	   res.json(books);
     });
 });
 
-app.post("/book", function (req, res) {
+app.post("/myBooks/book", function (req, res) {
+
+    console.log(req.body);
     var newBook = new Book({
         title: req.body.title,
-        subtitle: req.body.subtitle,
         authors: req.body.authors,
         publisher: req.body.publisher,
         publishedDate: req.body.publishedDate,
@@ -69,6 +71,7 @@ app.post("/book", function (req, res) {
             res.statusCode = 400;
             res.send("Another error");
     	} else {
+            console.log('workd');
 
     	    Book.find({title: req.body.title}, function (err, result) {
     		if (err !== null) {
@@ -89,14 +92,13 @@ app.get("/google/books", function(req, res) {
     var options = {
         field: req.query.queryType,
         lang: 'pt',
-        limit: 40
+        limit: 40 
     };
 
     books.search(req.query.queryValue ,options ,function(error, results) {
-        if ( ! error ) {
-            console.log(results);
-        } else {
+        if (error) {
             console.log(error);
+            return;
         }
 
         var books = [];
