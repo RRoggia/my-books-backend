@@ -41,20 +41,32 @@ module.exports.getMyBooks = function (req, res) {
         query.type = req.query.type;
     }
 
+    res.statusCode = 200;
+
 	myBook.find(query, function (err, myBooks) {
         if(!myBooks.length){
+            
             res.json({'error': 'No book found for this query.'});
-            res.status = 204;
             return;
         }
-
 	   res.json(myBooks);
     });
 }
 
 module.exports.registerMyBook = function(req, res){
 
-	console.log(req.body);
+    if(!req.body.title || !req.body.type){
+        res.statusCode = 400;
+        res.json({'error': 'Title and Type are required to register a new book.'});
+        return;
+    }
+
+    if(req.body.type !== 'BOOK' && req.body.type !== 'EBOOK'){
+        res.statusCode = 400;
+        res.json({'error': "Book Type should be 'BOOK' or 'EBOOK'."});
+        return;
+    }
+
     var myNewBook = new myBook({
         title: req.body.title,
         authors: req.body.authors,
@@ -67,20 +79,21 @@ module.exports.registerMyBook = function(req, res){
         type: req.body.type
     });
 
-    myNewBook.save(function (err, result) {
+    myNewBook.save(function (err) {
     	if (err !== null) {
-    	    console.log(err);
             res.statusCode = 400;
-            res.send("Another error");
+            res.send({'error': err});
     	} else {
-            console.log('workd');
 
-    	    myBook.find({title: req.body.title}, function (err, result) {
-    		if (err !== null) {
-                res.statusCode = 400;
-                res.send("ERROR");
-    		}
-    		res.json(result[0]);
+    	    myBook.findOne(myNewBook, function (err, createdBook) {
+        		if (err !== null) {
+                    res.statusCode = 400;
+                    res.send({'error': err});
+                    return;
+        		}
+                res.statusCode = 201;
+        		res.json(createdBook);
+                
     	    });
     	}
     });
