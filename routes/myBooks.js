@@ -10,5 +10,5 @@ router.get("/hello", function(req, res) {
 router.get("/books", myBooksController.getMyBooks);
 router.post("/book", myBooksController.registerMyBook);
 router.delete("/book/:id", myBooksController.deleteMyBook);
-
+router.put("/book/:id", myBooksController.updateMyBook)
 module.exports = router;

@@ -3,43 +3,7 @@ var myBook = mongoose.model("MyBook");
 
 module.exports.getMyBooks = function (req, res) {
 
-    var query = {};
-
-    if(req.query.title && req.query.title.length > 0){
-        query.title = req.query.title;
-    }
-
-    if(req.query.authors && req.query.authors.length > 0){
-        query.authors = req.query.authors;
-    }
-
-    if(req.query.publisher && req.query.publisher.length > 0){
-        query.publisher = req.query.publisher;
-    }
-
-    if(req.query.publishedDate && req.query.publishedDate.length > 0){
-        query.publishedDate = req.query.publishedDate;
-    }
-
-    if(req.query.pageCount && req.query.pageCount.length > 0){
-        query.pageCount = req.query.pageCount;
-    }
-
-    if(req.query.categories && req.query.categories.length > 0){
-        query.categories = req.query.categories;
-    }
-
-    if(req.query.language && req.query.language.length > 0){
-        query.language = req.query.language;
-    }
-
-    if(req.query.rating && req.query.rating.length > 0){
-        query.rating = req.query.rating;
-    }
-
-    if(req.query.type && req.query.type.length > 0){
-        query.type = req.query.type;
-    }
+    var query = getFilledParameters(req.query);
 
     res.statusCode = 200;
 
@@ -115,7 +79,7 @@ module.exports.deleteMyBook = function(req, res){
         }
 
         if(!myDeletedBook){
-            res.statusCode = 400;
+            res.statusCode = 404;
             res.send({'error': "Book was not found and therefore does not need to be deleted."});
             return;   
         }
@@ -125,3 +89,73 @@ module.exports.deleteMyBook = function(req, res){
     });
 
 };
+
+module.exports.updateMyBook = function(req, res){
+    if(!req.params.id){
+        res.statusCode = 400;
+        res.send({'error': 'Missing book Id'});
+    }
+
+    var attributesToUpdate = getFilledParameters(req.body);  
+
+    myBook.findOneAndUpdate({_id: req.params.id}, attributesToUpdate, function(err, bookUpdated){
+        if (err !== null) {
+            res.statusCode = 400;
+            res.send({'error': err});
+            return;
+        }
+
+        if(!bookUpdated){
+            res.statusCode = 404;
+            res.send({'error': "Book was not found, no action was taken."});
+            return;   
+        }
+
+        res.statusCode = 200;
+        res.json(bookUpdated);
+    });
+};
+
+function getFilledParameters(parameters){
+
+    var filledParameters = {};
+
+    if(parameters.title && parameters.title.length > 0){
+        filledParameters.title = parameters.title;
+    }
+
+    if(parameters.authors && parameters.authors.length > 0){
+        filledParameters.authors = parameters.authors;
+    }
+
+    if(parameters.publisher && parameters.publisher.length > 0){
+        filledParameters.publisher = parameters.publisher;
+    }
+
+    if(parameters.publishedDate && parameters.publishedDate.length > 0){
+        filledParameters.publishedDate = parameters.publishedDate;
+    }
+
+    if(parameters.pageCount && parameters.pageCount.length > 0){
+        filledParameters.pageCount = parameters.pageCount;
+    }
+
+    if(parameters.categories && parameters.categories.length > 0){
+        filledParameters.categories = parameters.categories;
+    }
+
+    if(parameters.language && parameters.language.length > 0){
+        filledParameters.language = parameters.language;
+    }
+
+    if(parameters.rating && parameters.rating.length > 0){
+        filledParameters.rating = parameters.rating;
+    }
+
+    if(parameters.type && parameters.type.length > 0){
+        filledParameters.type = parameters.type;
+    }
+
+    return filledParameters;
+
+}
