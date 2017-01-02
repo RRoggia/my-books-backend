@@ -2,7 +2,52 @@ var mongoose = require("mongoose");
 var myBook = mongoose.model("MyBook");
 
 module.exports.getMyBooks = function (req, res) {
-	myBook.find({}, function (err, myBooks) {
+
+    var query = {};
+
+    if(req.query.title && req.query.title.length > 0){
+        query.title = req.query.title;
+    }
+
+    if(req.query.authors && req.query.authors.length > 0){
+        query.authors = req.query.authors;
+    }
+
+    if(req.query.publisher && req.query.publisher.length > 0){
+        query.publisher = req.query.publisher;
+    }
+
+    if(req.query.publishedDate && req.query.publishedDate.length > 0){
+        query.publishedDate = req.query.publishedDate;
+    }
+
+    if(req.query.pageCount && req.query.pageCount.length > 0){
+        query.pageCount = req.query.pageCount;
+    }
+
+    if(req.query.categories && req.query.categories.length > 0){
+        query.categories = req.query.categories;
+    }
+
+    if(req.query.language && req.query.language.length > 0){
+        query.language = req.query.language;
+    }
+
+    if(req.query.rating && req.query.rating.length > 0){
+        query.rating = req.query.rating;
+    }
+
+    if(req.query.type && req.query.type.length > 0){
+        query.type = req.query.type;
+    }
+
+	myBook.find(query, function (err, myBooks) {
+        if(!myBooks.length){
+            res.json({'error': 'No book found for this query.'});
+            res.status = 204;
+            return;
+        }
+
 	   res.json(myBooks);
     });
 }
