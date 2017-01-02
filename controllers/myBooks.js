@@ -98,4 +98,30 @@ module.exports.registerMyBook = function(req, res){
     	}
     });
 
-}
+};
+
+module.exports.deleteMyBook = function(req, res){
+
+    if(!req.params.id){
+        res.statusCode = 400;
+        res.send({'error': 'Missing book Id'});
+    }
+
+    myBook.findOneAndRemove({_id: req.params.id}, function(err, myDeletedBook){
+        if (err !== null) {
+            res.statusCode = 400;
+            res.send({'error': err});
+            return;
+        }
+
+        if(!myDeletedBook){
+            res.statusCode = 400;
+            res.send({'error': "Book was not found and therefore does not need to be deleted."});
+            return;   
+        }
+
+        res.statusCode = 204;
+        res.send();
+    });
+
+};
