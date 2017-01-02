@@ -40,7 +40,8 @@ module.exports.registerMyBook = function(req, res){
         categories: req.body.categories,
         language: req.body.language,
         rating: req.body.rating,
-        type: req.body.type
+        type: req.body.type,
+        readAt: req.body.readAt
     });
 
     myNewBook.save(function (err) {
@@ -154,6 +155,10 @@ function getFilledParameters(parameters){
 
     if(parameters.type && parameters.type.length > 0){
         filledParameters.type = parameters.type;
+    }
+
+    if(parameters.readAt && parameters.readAt.length > 0){
+        filledParameters.readAt = new Date(parameters.readAt);
     }
 
     return filledParameters;

@@ -9,7 +9,8 @@ var myBookSchema = mongoose.Schema({
     categories: [String],
     language: String,
     rating: Number,
-    type: String
+    type: String,
+    readAt: Date
 });
 
 mongoose.model("MyBook", myBookSchema);
