@@ -5,6 +5,18 @@ module.exports.getMyBooks = function (req, res) {
 
     var query = getFilledParameters(req.query);
 
+    if(req.query.readAt && req.query.readAt.length > 0){
+        if(req.query.readAt.length === 4){
+            var oneYearLater = (parseInt(req.query.readAt) + 1).toString();
+            query.readAt = { 
+                $gte: new Date(req.query.readAt),
+                $lt: new Date(oneYearLater)
+            };
+        }else{
+            query.readAt = req.query.readAt;
+        }
+    }
+
     res.statusCode = 200;
 
 	myBook.find(query, function (err, myBooks) {
@@ -155,10 +167,6 @@ function getFilledParameters(parameters){
 
     if(parameters.type && parameters.type.length > 0){
         filledParameters.type = parameters.type;
-    }
-
-    if(parameters.readAt && parameters.readAt.length > 0){
-        filledParameters.readAt = new Date(parameters.readAt);
     }
 
     return filledParameters;
