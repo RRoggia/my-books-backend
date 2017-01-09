@@ -52,6 +52,7 @@ module.exports.registerMyBook = function(req, res){
         categories: req.body.categories,
         language: req.body.language,
         rating: req.body.rating,
+        thumbnail: req.body.thumbnail,
         type: req.body.type,
         readAt: req.body.readAt
     });
@@ -163,6 +164,10 @@ function getFilledParameters(parameters){
 
     if(parameters.rating && parameters.rating.length > 0){
         filledParameters.rating = parameters.rating;
+    }
+
+    if(parameters.thumbnail && parameters.thumbnail.length > 0){
+        filledParameters.thumbnail = parameters.thumbnail;
     }
 
     if(parameters.type && parameters.type.length > 0){

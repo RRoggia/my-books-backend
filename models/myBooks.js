@@ -8,6 +8,7 @@ var myBookSchema = mongoose.Schema({
     pageCount: Number,
     categories: [String],
     language: String,
+    thumbnail: String,
     rating: Number,
     type: String,
     readAt: Date
